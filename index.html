@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="">
+
+<head>
+	<meta charset="utf-8">
+	<title>traffic</title>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+	<style>
+		td{
+			width: 40px;
+			height: 40px;
+			outline: 1px solid black;
+			background-color: white;
+		}
+		.light{
+			width: 40px;
+			height: 40px;
+			border: 1px solid black;
+			border-radius: 100px;
+		}
+		.off{
+			background-color: white !important;
+		}
+		.car{
+			background-color: gray;
+		}
+	</style>
+</head>
+
+<body>
+<div style="width: 900px">
+	<table>
+		<tr id="row1">
+		</tr>
+		<tr id="row2">
+		</tr>
+	</table>
+	<div style="margin: 0 auto; border: 3px solid black; width: 42px; background-color: darkorange">
+		<div id="red" class="light off" style="background-color: red;"></div>
+		<div id="yellow" class="light off" style="background-color: yellow;"></div>
+		<div id="green" class="light" style="background-color: green;"></div>
+	</div>
+	<div>
+		<button id="next">next</button>
+		<button id="nextWithCar">add car</button>
+		<button id="lightToRed">red</button>
+		<button id="lightToYellow">yellow</button>
+		<button id="lightToGreen">green</button>
+	</div>
+</div>
+
+<script>
+	const cars = window.cars = new Array(40).fill(0);
+	window.light = "g";
+	$(function () {
+	    const r1 = window.r1 = $("#row1");
+	    const r2 = window.r2 = $("#row2");
+	    const c1 = window.c1 = [];
+	    for (let i=1; i<=20; i++){
+	        const cell = $(`<td id='c${i}'>${i}</td>`);
+	        c1.push(cell);
+	        r1.append(cell);
+		}
+	    for (let i=21; i<=40; i++){
+	        const cell = $(`<td id='c${i}'>${i}</td>`);
+	        c1.push(cell);
+	        r2.append(cell);
+		}
+	    document.getElementById("next").onclick=function () {
+	        move();
+	        update();
+        };
+	    document.getElementById("nextWithCar").onclick=function () {
+            move();
+	        newCar();
+	        update();
+        };
+        document.getElementById("lightToRed").onclick=function () {
+            window.light = "r";
+            $(".light").addClass("off");
+            $("#red").removeClass("off");
+        };
+        document.getElementById("lightToYellow").onclick=function () {
+            window.light = "y";
+            $(".light").addClass("off");
+            $("#yellow").removeClass("off");
+        };
+        document.getElementById("lightToGreen").onclick=function () {
+            window.light = "g";
+            $(".light").addClass("off");
+            $("#green").removeClass("off");
+        };
+    });
+	function update() {
+        $(".car").removeClass("car");
+        for(let i=0; i<cars.length; i++){
+            if(cars[i]){
+                c1[i].addClass("car");
+            }
+        }
+    }
+	function newCar() {
+	    cars[0] = 1;
+    }
+    function move() {
+	    for (let i = 39; i>20; i--){
+	        cars[i] = cars[i-1];
+		}
+	    if(window.light === "g"){
+            for (let i = 20; i>0; i--){
+                cars[i] = cars[i-1];
+            }
+		} else {
+	        let jamPos = 19;
+	        while (cars[jamPos]){
+	            jamPos--;
+			}
+            for (let i = jamPos; i>0; i--){
+                cars[i] = cars[i-1];
+            }
+		}
+	    cars[0] = 0;
+    }
+</script>
+
+</body>
+
+</html>
