@@ -47,15 +47,20 @@
 		<button id="lightToYellow">yellow</button>
 		<button id="lightToGreen">green</button>
 	</div>
+	<div>
+		<label for="speed">speed</label><input id="speed" type="number">
+		<button id="pause">start/pause</button>
+	</div>
 </div>
 
 <script>
+	window.interval = null;
 	const cars = window.cars = new Array(40).fill(0);
+    const c1 = window.c1 = [];
 	window.light = "g";
 	$(function () {
 	    const r1 = window.r1 = $("#row1");
 	    const r2 = window.r2 = $("#row2");
-	    const c1 = window.c1 = [];
 	    for (let i=1; i<=20; i++){
 	        const cell = $(`<td id='c${i}'>${i}</td>`);
 	        c1.push(cell);
@@ -90,6 +95,17 @@
             $(".light").addClass("off");
             $("#green").removeClass("off");
         };
+        document.getElementById("pause").onclick=function () {
+            if(window.interval){
+                clearInterval(window.interval);
+                window.interval = null;
+                return;
+			}
+            window.interval = setInterval(function () {
+                move();
+                update();
+            }, $("#speed").val());
+        };
     });
 	function update() {
         $(".car").removeClass("car");
@@ -111,6 +127,7 @@
                 cars[i] = cars[i-1];
             }
 		} else {
+	        cars[20] = 0;
 	        let jamPos = 19;
 	        while (cars[jamPos]){
 	            jamPos--;
