@@ -61,6 +61,8 @@
 
 <script>
 	window.interval = null;
+	window.carGen = null;
+	window.carReady = 0;
 	const cars = window.cars = new Array(40).fill(0);
     const c1 = window.c1 = [];
 	window.light = "g";
@@ -104,20 +106,33 @@
         document.getElementById("pause").onclick=function () {
             if(window.interval){
                 clearInterval(window.interval);
+                if(window.carGen){
+                    clearInterval(window.carGen);
+                    window.carGen = null;
+				}
                 window.interval = null;
                 return;
 			}
             window.interval = setInterval(function () {
                 move();
+                if(window.carReady){
+                    newCar();
+                    window.carReady = 0;
+				}
                 update();
             }, $("#carSpeed").val());
         };
         document.getElementById("genTraffic").onclick=function () {
             let rate = $("#traffic").val();
+            let speed = $("#carSpeed").val();
             let base = 3000;
             let greenLength = base + base*rate/100;
             let redLength = 2*base - base*rate/100;
             const yellowLength = base/3;
+            let timeBetweenCars = (100-rate)*0.045*speed;
+            setInterval(function () {
+                window.carReady = 1;
+            }, timeBetweenCars*(Math.random()+3)/3);
             setTimeout(toGreen,0);
 			function toGreen() {
                 window.light = "g";
