@@ -48,8 +48,14 @@
 		<button id="lightToGreen">green</button>
 	</div>
 	<div>
-		<label for="speed">speed</label><input id="speed" type="number">
+		<label for="carSpeed">speed</label><input id="carSpeed" type="number" value="1000">
+	</div>
+	<div>
+		<label for="traffic">traffic</label><input id="traffic" type="number" value="1" max="100" min="1">
+	</div>
+	<div>
 		<button id="pause">start/pause</button>
+		<button id="genTraffic">generate traffic</button>
 	</div>
 </div>
 
@@ -104,9 +110,36 @@
             window.interval = setInterval(function () {
                 move();
                 update();
-            }, $("#speed").val());
+            }, $("#carSpeed").val());
         };
-    });
+        document.getElementById("genTraffic").onclick=function () {
+            let rate = $("#traffic").val();
+            let base = 3000;
+            let greenLength = base + base*rate/100;
+            let redLength = 2*base - base*rate/100;
+            const yellowLength = base/3;
+            setTimeout(toGreen,0);
+			function toGreen() {
+                window.light = "g";
+                $(".light").addClass("off");
+                $("#green").removeClass("off");
+                setTimeout(toYellow, greenLength);
+                console.log(greenLength,redLength,yellowLength);
+            }
+			function toYellow() {
+                window.light = "y";
+                $(".light").addClass("off");
+                $("#yellow").removeClass("off");
+                setTimeout(toRed, yellowLength);
+            }
+			function toRed() {
+                window.light = "r";
+                $(".light").addClass("off");
+                $("#red").removeClass("off");
+                setTimeout(toGreen, redLength);
+            }
+		};
+        });
 	function update() {
         $(".car").removeClass("car");
         for(let i=0; i<cars.length; i++){
