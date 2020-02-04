@@ -62,6 +62,7 @@
 <script>
 	window.interval = null;
 	window.carGen = null;
+	window.trafficLightSwitcher = null;
 	window.carReady = 0;
 	const cars = window.cars = new Array(40).fill(0);
     const c1 = window.c1 = [];
@@ -110,6 +111,10 @@
                     clearInterval(window.carGen);
                     window.carGen = null;
 				}
+                if(window.trafficLightSwitcher){
+                    clearTimeout(window.trafficLightSwitcher);
+                    window.trafficLightSwitcher = null;
+				}
                 window.interval = null;
                 return;
 			}
@@ -130,28 +135,27 @@
             let redLength = 2*base - base*rate/100;
             const yellowLength = base/3;
             let timeBetweenCars = (100-rate)*0.045*speed;
-            setInterval(function () {
+            window.carGen = setInterval(function () {
                 window.carReady = 1;
             }, timeBetweenCars*(Math.random()+3)/3);
-            setTimeout(toGreen,0);
+            window.trafficLightSwitcher = setTimeout(toGreen,0);
 			function toGreen() {
                 window.light = "g";
                 $(".light").addClass("off");
                 $("#green").removeClass("off");
-                setTimeout(toYellow, greenLength);
-                console.log(greenLength,redLength,yellowLength);
+                window.trafficLightSwitcher = setTimeout(toYellow, greenLength);
             }
 			function toYellow() {
                 window.light = "y";
                 $(".light").addClass("off");
                 $("#yellow").removeClass("off");
-                setTimeout(toRed, yellowLength);
+                window.trafficLightSwitcher = setTimeout(toRed, yellowLength);
             }
 			function toRed() {
                 window.light = "r";
                 $(".light").addClass("off");
                 $("#red").removeClass("off");
-                setTimeout(toGreen, redLength);
+                window.trafficLightSwitcher = setTimeout(toGreen, redLength);
             }
 		};
         });
